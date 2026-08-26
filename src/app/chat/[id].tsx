@@ -1,12 +1,6 @@
-import { router } from "expo-router";
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import { ArrowLeft } from "lucide-react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const contacts = [
@@ -90,86 +84,58 @@ const contacts = [
   },
 ];
 
-export default function Index() {
+export default function Chat() {
+  const { id, name, avatar } = useLocalSearchParams<{
+    id: string;
+    name: string;
+    avatar: string;
+  }>();
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View>
-        <Text style={styles.header}>My Messenger</Text>
-      </View>
       <View style={styles.container}>
-        <FlatList
-          style={styles.list}
-          data={contacts}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.card}
-              onPress={() =>
-                router.push({
-                  pathname: "/chat/[id]",
-                  params: { id: item.id, name: item.name, avatar: item.avatar },
-                })
-              }
-            >
-              <Image
-                source={{
-                  uri: item.avatar || "https://i.pravatar.cc/150?img=12",
-                }}
-                style={styles.image}
-              />
-              <View>
-                <Text style={styles.text}>{item.name}</Text>
-                <Text style={styles.msg}>{item.message}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) => item.id}
+        <View>
+          <ArrowLeft size={50} />
+        </View>
+        <Image
+          source={{
+            uri: avatar,
+          }}
+          style={styles.image}
         />
+        <Text style={styles.header}>{name}</Text>
       </View>
+      {/* Chat feed */}
+      <View style={styles.chatFeed}></View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    backgroundColor: "#fff",
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    padding: 20,
-    backgroundColor: "#2fc6fd",
-  },
-  list: {
-    flex: 1,
-    width: "100%",
-    padding: 10,
-  },
-  card: {
     justifyContent: "flex-start",
+    width: "100%",
+    backgroundColor: "#2fc6fd",
     flexDirection: "row",
-    alignItems: "center",
-    // backgroundColor: "#af5a5a",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    alignItems: "flex-start",
+    gap: 10,
     padding: 10,
     paddingLeft: 0,
   },
-  text: {
-    fontSize: 25,
-    paddingLeft: 20,
-  },
-  msg: {
-    fontSize: 16,
-    paddingLeft: 20,
-    paddingTop: 10,
+  header: {
+    fontSize: 24,
+    width: "100%",
+    fontWeight: "bold",
+    backgroundColor: "#2fc6fd",
+    alignSelf: "center",
   },
   image: {
     borderRadius: 50,
-    width: 80,
-    height: 80,
+    width: 50,
+    height: 50,
+  },
+  chatFeed: {
+    flex: 1,
+    backgroundColor: "#fff",
   },
 });
